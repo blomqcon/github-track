@@ -2,16 +2,19 @@
   "name": "github-track",
   "version": "1.0.0",
   "description": "Track which projects organizations are contributing to.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "mongod --dbpath data --smallfiles",
+    "start": ""
   },
   "author": "blomqcon",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
-    "mysql": "^2.8.0",
+    "forever": "^0.15.1",
+    "mongodb": "^2.0.42",
+    "monk": "^1.0.1",
     "request": "^2.60.0"
   }
 }
