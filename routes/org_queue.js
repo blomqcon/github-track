@@ -26,6 +26,9 @@ setInterval(function() {
       return orgs_update({'id': org_id}, {$set: {"members": members_data}});
     }).then(function(doc, err) {
       console.log('added members');
+      return github_api.user_events('blomqcon');
+    }).then(function(events) {
+      console.log(events)
       updating_org = false;
     });
   }

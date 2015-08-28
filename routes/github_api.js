@@ -18,6 +18,10 @@ exports.orgs_members = function(org) {
   return orgs_members_helper([], org, 1);
 };
 
+exports.user_events = function(user) {
+  return user_events_helper([], user, 1);
+}
+
 function orgs_members_helper(all_members, org, page) {
   var promise = orgs_members_page(org, page).then(function(members) {
     all_members.push.apply(all_members, members);
@@ -32,6 +36,30 @@ function orgs_members_helper(all_members, org, page) {
 
 function orgs_members_page(org, page) {
   var endpoint = 'orgs/' + org + '/members' + '?page=' + page + '&per_page=100&client_id=' + client_id + '&client_secret=' + client_secret;
+  var outputPromise = github_api_request(endpoint).then(function(response) {
+    //console.log('Rate Limit Remainning: ' + response[0].headers['x-ratelimit-remaining']);
+    return JSON.parse(response[0].body);
+  }, function(error) {
+    return [];
+  });
+  return outputPromise;
+}
+
+
+function user_events_helper(all_events, user, page) {
+  var promise = user_events_page(user, page).then(function(users) {
+    all_events.push.apply(all_events, users);
+    if(users.length == 30) {
+      return helper(all_events, user, ++page);
+    } else {
+      return all_events;
+    }
+  });
+  return promise;
+}
+
+function user_events_page(user, page) {
+  var endpoint = 'users/' + user + '/events' + '?page=' + page + '&client_id=' + client_id + '&client_secret=' + client_secret;
   var outputPromise = github_api_request(endpoint).then(function(response) {
     //console.log('Rate Limit Remainning: ' + response[0].headers['x-ratelimit-remaining']);
     return JSON.parse(response[0].body);
